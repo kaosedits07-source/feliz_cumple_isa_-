@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para Isa 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: "Courier New", monospace;
+      padding: 20px;
+    }
+
+    #terminal {
+      white-space: pre-wrap;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="terminal"></div><span class="cursor">█</span>
+
+<script>
+const texto = `
+Holaaaaa!
+
+Hoy es un día muy especial,
+y quería hacerte algo especial.
+
+Quito, 19 de febrero de 2026
+
+De: Gus
+Para: Isa
+
+El mundo es más hermoso contigo.
+Gracias por ser tú.
+Confía en ti.
+Todo va a estar bien <3
+
+Isa, créeme cuando te digo
+que eres muy importante para mí.
+Gracias por llenar de luz este mundo.
+
+Disfruta este día,
+piensa en lo que amas,
+en lo que te ilusiona,
+en todo lo que te hace sonreír.
+
+Te quiero mucho.
+
+~ G.E
+`;
+
+let i = 0;
+const velocidad = 40;
+
+function escribir() {
+  if (i < texto.length) {
+    document.getElementById("terminal").innerHTML += texto.charAt(i);
+    i++;
+    setTimeout(escribir, velocidad);
+  }
+}
+
+escribir();
+</script>
+
+</body>
+</html>
