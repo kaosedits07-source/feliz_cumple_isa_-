@@ -9,7 +9,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: radial-gradient(circle at top, #1a1a1a, #000);
+      background: #000;
       color: #ffffff;
       font-family: "Courier New", monospace;
       display: flex;
@@ -17,84 +17,123 @@
       align-items: center;
       padding: 20px;
       box-sizing: border-box;
-      overflow: hidden; 
+      overflow: hidden;
       touch-action: none;
+    }
+
+    /* Fondo de Estrellas */
+    #stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: blink var(--d) infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
     }
 
     #terminal {
       max-width: 500px;
       width: 100%;
-      background: rgba(20, 20, 20, 0.9);
+      background: rgba(10, 10, 10, 0.85);
       border: 1px solid #ff5fa244;
       border-radius: 15px;
       padding: 25px;
-      box-shadow: 0 0 25px rgba(255, 95, 162, 0.2);
+      box-shadow: 0 0 30px rgba(255, 95, 162, 0.2);
       position: relative;
       z-index: 10;
+      backdrop-filter: blur(5px);
     }
 
-    .fecha-terminal {
-      font-size: 0.8rem;
-      color: #666;
-      margin-bottom: 15px;
-      display: block;
-    }
+    .fecha-terminal { font-size: 0.75rem; color: #777; margin-bottom: 10px; display: block; }
 
     #texto-animado {
       margin: 0;
       white-space: pre-wrap;
-      line-height: 1.8;
-      font-size: 1.1rem;
+      line-height: 1.6;
+      font-size: 1.05rem;
       color: #eee;
+    }
+
+    /* Contador */
+    #contador {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #ff5fa2;
+      border-top: 1px solid #333;
+      padding-top: 10px;
     }
 
     .cumple-final {
       color: #ff5fa2;
       font-weight: bold;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       text-align: center;
       display: block;
-      margin-top: 25px;
-      text-shadow: 0 0 15px rgba(255, 95, 162, 0.5);
-      animation: latido 2s infinite;
+      margin-top: 20px;
+      text-shadow: 0 0 15px rgba(255, 95, 162, 0.6);
     }
 
-    @keyframes latido {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    .corazon-flotante {
+    /* Partículas de Confeti/Corazones */
+    .confeti {
       position: absolute;
       pointer-events: none;
-      font-size: 24px;
-      animation: animarCorazon 1.5s ease-out forwards;
       z-index: 100;
+      animation: fall var(--t) linear forwards;
     }
 
-    @keyframes animarCorazon {
-      0% { transform: translate(0, 0) scale(1); opacity: 1; }
-      100% { transform: translate(var(--dx), var(--dy)) scale(1.5); opacity: 0; }
+    @keyframes fall {
+      to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
     }
   </style>
 </head>
 
 <body onclick="soltarCorazon(event)" ontouchstart="soltarCorazon(event)">
 
+  <div id="stars-container"></div>
+
   <div id="terminal">
-    <span class="fecha-terminal">LOG_DATE: 18/02/2026 | SESSION_ACTIVE</span>
+    <span class="fecha-terminal">SISTEMA_INICIADO: 18/02/2026 | @G.E</span>
     <div id="texto-animado"></div>
+    
+    <div id="contador">Cerrando ciclo en: <span id="timer">--:--:--</span></div>
+
     <div id="mensaje-cumple" style="display:none;" class="cumple-final">
       ¡FELIZ CUMPLEAÑOS, ISA! 🎂✨
     </div>
   </div>
 
   <script>
+    // 1. Generar Estrellas
+    const starsContainer = document.getElementById('stars-container');
+    for (let i = 0; i < 100; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 3 + 'px';
+      star.style.width = size;
+      star.style.height = size;
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.setProperty('--d', (Math.random() * 3 + 2) + 's');
+      starsContainer.appendChild(star);
+    }
+
+    // 2. Texto Animado
     const contenido = "Hola Isa 💗\n\nHoy quería regalarte algo distinto.\nAlgo simple, pero hecho con cariño.\n\nGracias por existir.\nGracias por tu risa.\nGracias por ser tú.\n\nNunca olvides lo especial que eres,\nni todo lo bonito que llevas dentro.\n\nCon mucho cariño,\nGus ~G.E ❤";
-    
     let index = 0;
     const elementoTexto = document.getElementById("texto-animado");
-    const elementoCumple = document.getElementById("mensaje-cumple");
 
     function escribirTexto() {
       if (index < contenido.length) {
@@ -102,31 +141,67 @@
         index++;
         setTimeout(escribirTexto, 50);
       } else {
-        setTimeout(() => {
-          elementoCumple.style.display = "block";
-        }, 800);
+        setTimeout(lanzarCelebracion, 800);
       }
     }
 
-    window.onload = escribirTexto;
+    // 3. Contador para medianoche (19 de febrero)
+    function actualizarContador() {
+      const ahora = new Date();
+      const meta = new Date();
+      meta.setHours(24, 0, 0, 0); // Esto apunta a las 00:00:00 del día siguiente
 
-    function soltarCorazon(e) {
-      const corazon = document.createElement("div");
-      corazon.className = "corazon-flotante";
-      corazon.innerHTML = "💗";
+      const dif = meta - ahora;
+      if (dif <= 0) {
+        document.getElementById("timer").innerHTML = "00:00:00";
+        return;
+      }
+
+      const h = Math.floor((dif / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((dif / 1000 / 60) % 60);
+      const s = Math.floor((dif / 1000) % 60);
       
+      document.getElementById("timer").innerHTML = 
+        `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+    setInterval(actualizarContador, 1000);
+
+    // 4. Celebración Final
+    function lanzarCelebracion() {
+      document.getElementById("mensaje-cumple").style.display = "block";
+      // Lluvia automática de corazones
+      for(let i=0; i<30; i++) {
+        setTimeout(crearConfeti, i * 100);
+      }
+    }
+
+    function crearConfeti() {
+      const c = document.createElement("div");
+      c.className = "confeti";
+      c.innerHTML = "💗";
+      c.style.left = Math.random() * 100 + "vw";
+      c.style.top = "-5vh";
+      c.style.fontSize = (Math.random() * 20 + 10) + "px";
+      c.style.setProperty('--t', (Math.random() * 3 + 2) + "s");
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5000);
+    }
+
+    // Toque manual para corazones
+    function soltarCorazon(e) {
       const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
       const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
-      
+      const corazon = document.createElement("div");
+      corazon.className = "confeti";
+      corazon.innerHTML = "❤️";
       corazon.style.left = x + "px";
       corazon.style.top = y + "px";
-      
-      corazon.style.setProperty('--dx', (Math.random() * 100 - 50) + "px");
-      corazon.style.setProperty('--dy', (Math.random() * -150 - 50) + "px");
-
+      corazon.style.animation = "fall 2s ease-out forwards";
       document.body.appendChild(corazon);
-      setTimeout(() => corazon.remove(), 1500);
+      setTimeout(() => corazon.remove(), 2000);
     }
+
+    window.onload = escribirTexto;
   </script>
 </body>
 </html>
