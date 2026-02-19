@@ -33,6 +33,13 @@
       z-index: 10;
     }
 
+    .fecha-terminal {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 15px;
+      display: block;
+    }
+
     #texto-animado {
       margin: 0;
       white-space: pre-wrap;
@@ -41,20 +48,20 @@
       color: #eee;
     }
 
-    .cumple {
-      display: block;
-      margin-top: 20px;
-      font-size: 1.5rem;
+    .cumple-final {
       color: #ff5fa2;
       font-weight: bold;
-      text-shadow: 0 0 10px #ff5fa266;
+      font-size: 1.6rem;
       text-align: center;
-      animation: aparecer 2s ease-in;
+      display: block;
+      margin-top: 25px;
+      text-shadow: 0 0 15px rgba(255, 95, 162, 0.5);
+      animation: latido 2s infinite;
     }
 
-    @keyframes aparecer {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
+    @keyframes latido {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
 
     .corazon-flotante {
@@ -69,38 +76,35 @@
       0% { transform: translate(0, 0) scale(1); opacity: 1; }
       100% { transform: translate(var(--dx), var(--dy)) scale(1.5); opacity: 0; }
     }
-
-    #texto-animado::after {
-      content: "_";
-      animation: parpadeo 0.8s infinite;
-      color: #ff5fa2;
-    }
-    @keyframes parpadeo { 50% { opacity: 0; } }
   </style>
 </head>
 
 <body onclick="soltarCorazon(event)" ontouchstart="soltarCorazon(event)">
 
   <div id="terminal">
+    <span class="fecha-terminal">LOG_DATE: 18/02/2026 | SESSION_ACTIVE</span>
     <div id="texto-animado"></div>
+    <div id="mensaje-cumple" style="display:none;" class="cumple-final">
+      ¡FELIZ CUMPLEAÑOS, ISA! 🎂✨
+    </div>
   </div>
 
   <script>
-    const contenido = "Hola Isa 💗\n\nHoy quería regalarte algo distinto.\nAlgo simple, pero hecho con cariño.\n\nGracias por existir.\nGracias por tu risa.\nGracias por ser tú.\n\nNunca olvides lo especial que eres,\nni todo lo bonito que llevas dentro.\n\nCon mucho cariño,\nGus ❤";
+    const contenido = "Hola Isa 💗\n\nHoy quería regalarte algo distinto.\nAlgo simple, pero hecho con cariño.\n\nGracias por existir.\nGracias por tu risa.\nGracias por ser tú.\n\nNunca olvides lo especial que eres,\nni todo lo bonito que llevas dentro.\n\nCon mucho cariño,\nGus ~G.E ❤";
     
     let index = 0;
-    const elemento = document.getElementById("texto-animado");
+    const elementoTexto = document.getElementById("texto-animado");
+    const elementoCumple = document.getElementById("mensaje-cumple");
 
     function escribirTexto() {
       if (index < contenido.length) {
-        elemento.innerHTML += contenido[index];
+        elementoTexto.innerHTML += contenido[index];
         index++;
-        setTimeout(escribirTexto, 60);
+        setTimeout(escribirTexto, 50);
       } else {
-        // Al terminar de escribir, añade el mensaje de Feliz Cumpleaños
         setTimeout(() => {
-          elemento.innerHTML += '<span class="cumple"><br>¡FELIZ CUMPLEAÑOS, ISA! 🎂✨</span>';
-        }, 1000);
+          elementoCumple.style.display = "block";
+        }, 800);
       }
     }
 
@@ -109,7 +113,7 @@
     function soltarCorazon(e) {
       const corazon = document.createElement("div");
       corazon.className = "corazon-flotante";
-      corazon.innerHTML = Math.random() > 0.5 ? "💗" : "❤️";
+      corazon.innerHTML = "💗";
       
       const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
       const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
