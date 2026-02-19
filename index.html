@@ -47,46 +47,55 @@
     #terminal {
       max-width: 500px;
       width: 100%;
-      background: rgba(10, 10, 10, 0.85);
-      border: 1px solid #ff5fa244;
+      background: rgba(15, 15, 15, 0.9);
+      border: 1px solid #ff5fa255;
       border-radius: 15px;
       padding: 25px;
-      box-shadow: 0 0 30px rgba(255, 95, 162, 0.2);
+      box-shadow: 0 0 40px rgba(255, 95, 162, 0.2);
       position: relative;
       z-index: 10;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(8px);
     }
 
-    .fecha-terminal { font-size: 0.75rem; color: #777; margin-bottom: 10px; display: block; }
+    .fecha-terminal { font-size: 0.75rem; color: #888; margin-bottom: 12px; display: block; }
 
     #texto-animado {
       margin: 0;
       white-space: pre-wrap;
-      line-height: 1.6;
+      line-height: 1.7;
       font-size: 1.05rem;
-      color: #eee;
+      color: #f0f0f0;
     }
 
-    /* Contador */
+    /* Contador Estilo Hacker */
     #contador {
-      margin-top: 15px;
-      font-size: 0.9rem;
+      margin-top: 20px;
+      font-size: 0.85rem;
       color: #ff5fa2;
       border-top: 1px solid #333;
-      padding-top: 10px;
+      padding-top: 15px;
+      letter-spacing: 1px;
     }
 
     .cumple-final {
       color: #ff5fa2;
       font-weight: bold;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       text-align: center;
       display: block;
-      margin-top: 20px;
-      text-shadow: 0 0 15px rgba(255, 95, 162, 0.6);
+      margin-top: 25px;
+      text-shadow: 0 0 20px rgba(255, 95, 162, 0.7);
+      animation: heartBeat 1.5s infinite;
     }
 
-    /* Partículas de Confeti/Corazones */
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      15% { transform: scale(1.1); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.15); }
+      60% { transform: scale(1); }
+    }
+
     .confeti {
       position: absolute;
       pointer-events: none;
@@ -95,7 +104,7 @@
     }
 
     @keyframes fall {
-      to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+      to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
     }
   </style>
 </head>
@@ -105,10 +114,10 @@
   <div id="stars-container"></div>
 
   <div id="terminal">
-    <span class="fecha-terminal">SISTEMA_INICIADO: 18/02/2026 | @G.E</span>
+    <span class="fecha-terminal">SISTEMA_INICIADO: 19/02/2026 | @G.E</span>
     <div id="texto-animado"></div>
     
-    <div id="contador">Cerrando ciclo en: <span id="timer">--:--:--</span></div>
+    <div id="contador">TIEMPO_RESTANTE_CUMPLE: <span id="timer">--:--:--</span></div>
 
     <div id="mensaje-cumple" style="display:none;" class="cumple-final">
       ¡FELIZ CUMPLEAÑOS, ISA! 🎂✨
@@ -116,21 +125,21 @@
   </div>
 
   <script>
-    // 1. Generar Estrellas
+    // 1. Fondo de Estrellas parpadeantes
     const starsContainer = document.getElementById('stars-container');
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 120; i++) {
       const star = document.createElement('div');
       star.className = 'star';
-      const size = Math.random() * 3 + 'px';
+      const size = Math.random() * 2.5 + 'px';
       star.style.width = size;
       star.style.height = size;
       star.style.left = Math.random() * 100 + '%';
       star.style.top = Math.random() * 100 + '%';
-      star.style.setProperty('--d', (Math.random() * 3 + 2) + 's');
+      star.style.setProperty('--d', (Math.random() * 4 + 2) + 's');
       starsContainer.appendChild(star);
     }
 
-    // 2. Texto Animado
+    // 2. Máquina de escribir con tus iniciales
     const contenido = "Hola Isa 💗\n\nHoy quería regalarte algo distinto.\nAlgo simple, pero hecho con cariño.\n\nGracias por existir.\nGracias por tu risa.\nGracias por ser tú.\n\nNunca olvides lo especial que eres,\nni todo lo bonito que llevas dentro.\n\nCon mucho cariño,\nGus ~G.E ❤";
     let index = 0;
     const elementoTexto = document.getElementById("texto-animado");
@@ -139,21 +148,21 @@
       if (index < contenido.length) {
         elementoTexto.innerHTML += contenido[index];
         index++;
-        setTimeout(escribirTexto, 50);
+        setTimeout(escribirTexto, 55);
       } else {
-        setTimeout(lanzarCelebracion, 800);
+        setTimeout(lanzarCelebracion, 1000);
       }
     }
 
-    // 3. Contador para medianoche (19 de febrero)
+    // 3. Contador actualizado para terminar el 19 de febrero
     function actualizarContador() {
       const ahora = new Date();
       const meta = new Date();
-      meta.setHours(24, 0, 0, 0); // Esto apunta a las 00:00:00 del día siguiente
+      meta.setHours(23, 59, 59, 999); // Fin del día de hoy
 
       const dif = meta - ahora;
       if (dif <= 0) {
-        document.getElementById("timer").innerHTML = "00:00:00";
+        document.getElementById("timer").innerHTML = "¡ESPERO QUE HAYA SIDO INCREÍBLE! 💗";
         return;
       }
 
@@ -166,28 +175,27 @@
     }
     setInterval(actualizarContador, 1000);
 
-    // 4. Celebración Final
+    // 4. Lluvia de corazones al final
     function lanzarCelebracion() {
       document.getElementById("mensaje-cumple").style.display = "block";
-      // Lluvia automática de corazones
-      for(let i=0; i<30; i++) {
-        setTimeout(crearConfeti, i * 100);
+      for(let i=0; i<40; i++) {
+        setTimeout(crearConfeti, i * 150);
       }
     }
 
     function crearConfeti() {
       const c = document.createElement("div");
       c.className = "confeti";
-      c.innerHTML = "💗";
+      c.innerHTML = Math.random() > 0.5 ? "💗" : "✨";
       c.style.left = Math.random() * 100 + "vw";
       c.style.top = "-5vh";
-      c.style.fontSize = (Math.random() * 20 + 10) + "px";
-      c.style.setProperty('--t', (Math.random() * 3 + 2) + "s");
+      c.style.fontSize = (Math.random() * 20 + 15) + "px";
+      c.style.setProperty('--t', (Math.random() * 4 + 3) + "s");
       document.body.appendChild(c);
-      setTimeout(() => c.remove(), 5000);
+      setTimeout(() => c.remove(), 6000);
     }
 
-    // Toque manual para corazones
+    // Efecto manual al tocar
     function soltarCorazon(e) {
       const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
       const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
@@ -196,9 +204,9 @@
       corazon.innerHTML = "❤️";
       corazon.style.left = x + "px";
       corazon.style.top = y + "px";
-      corazon.style.animation = "fall 2s ease-out forwards";
+      corazon.style.animation = "fall 2.5s ease-out forwards";
       document.body.appendChild(corazon);
-      setTimeout(() => corazon.remove(), 2000);
+      setTimeout(() => corazon.remove(), 2500);
     }
 
     window.onload = escribirTexto;
